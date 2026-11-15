@@ -69,8 +69,12 @@ fn fixture() -> Fixture {
     }
 }
 
+/// The ixOS checkout the server serves docs from: FORGE_WORKSPACE, or
+/// forge-lab itself when unset (then the resource checks are skipped).
 fn workspace() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
+    std::env::var_os("FORGE_WORKSPACE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."))
 }
 
 /// A connected client: sends requests, returns responses by id.
@@ -194,6 +198,10 @@ async fn tools_resources_and_prompts_are_listed() {
         .map(|r| r["uri"].as_str().unwrap())
         .collect();
     assert!(uris.contains(&"forge://conventions") && uris.contains(&"forge://capabilities"));
+    if std::env::var_os("FORGE_WORKSPACE").is_none() {
+        eprintln!("FORGE_WORKSPACE (an ixOS checkout) is not set: resource reads not checked");
+        return;
+    }
     let conv = c
         .request("resources/read", json!({"uri": "forge://conventions"}))
         .await;

@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::explore::{Action, Issue, Report};
-use crate::{Locator, UiNode};
+use forge_uitest::{Locator, UiNode};
 
 /// How strongly a control is tied to the change.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -256,7 +256,7 @@ pub fn parse_route(steps: &[Value]) -> Result<Vec<Action>, String> {
     #[derive(Deserialize)]
     struct Steps {
         #[serde(default)]
-        step: Vec<crate::script::Step>,
+        step: Vec<forge_uitest::script::Step>,
     }
     let parsed: Steps = toml::from_str(&text).map_err(|e| e.to_string())?;
     parsed

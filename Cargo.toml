@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/forge-mcp",
+    "crates/forge-devtools",
+    "crates/forge-explore",
+    "crates/forge-live",
+    "crates/forge-lab",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.89"
+
+# ixOS, by git. Moves with ixOS: bump the rev after an ixOS change these
+# crates need.
+[workspace.dependencies]
+forge-runtime = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
+forge-device = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
+forge-devproto = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
+forge-uitest = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"

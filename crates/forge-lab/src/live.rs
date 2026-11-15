@@ -1,15 +1,15 @@
 //! `forge device pair | unpair | status | snapshot | cmd | connect`: the live
 //! connection to a development build (Forge Device M1). The protocol and the
-//! phone side are in `forge-devproto`, `forge-devtools` and `forge-device`;
+//! phone side are in `forge-devproto`, `forge-devtools` and `forge-live`;
 //! this file picks the phone and formats.
 
 use std::io::Write;
 use std::time::Duration;
 
-use forge_device::live::{self, Session};
-use forge_device::{pick_device, DeviceBackend, DeviceError, DeviceRef, PairingStore};
+use forge_device::{pick_device, DeviceBackend, DeviceError, DeviceRef};
 use forge_devproto::client::{Bye, ClientError, Event, From};
 use forge_devproto::{ByeReason, Command, Record, Reply};
+use forge_live::{self as live, LiveError, PairingStore, Session};
 
 /// Which phone and app to talk to, and where pairings are kept.
 pub struct Target<'a> {
@@ -28,7 +28,7 @@ impl Target<'_> {
         pick_device(self.backend, self.udid).map_err(err)
     }
 
-    fn open(&self, device: &DeviceRef, from: From) -> Result<Session, DeviceError> {
+    fn open(&self, device: &DeviceRef, from: From) -> Result<Session, LiveError> {
         live::open(self.backend, device, self.port, self.store, from)
     }
 
@@ -161,12 +161,12 @@ fn line(started_ms: i64, record: &Record) -> String {
 
 /// Whether a failed reconnect is worth retrying (the app is not back yet,
 /// the cable was pulled) rather than a problem the user must fix.
-fn retryable(e: &DeviceError) -> bool {
+fn retryable(e: &LiveError) -> bool {
     !matches!(
         e,
-        DeviceError::Live(ClientError::NotPaired { .. } | ClientError::KeyRejected { .. })
-            | DeviceError::Pairings(_)
-            | DeviceError::Usbmuxd { .. }
+        LiveError::Live(ClientError::NotPaired { .. } | ClientError::KeyRejected { .. })
+            | LiveError::Pairings(_)
+            | LiveError::Device(DeviceError::Usbmuxd { .. })
     )
 }
 

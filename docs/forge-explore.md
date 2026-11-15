@@ -1,5 +1,7 @@
 # Exploratory UI testing (`forge ui explore`)
 
+> Moved from ixOS to forge-lab on 2026-11-15. The explorer's library is `crates/forge-explore`; its command (`forge ui explore` below) is parked until it is wired into `forge-lab` (see parked/README.md).
+
 `forge ui run` checks what someone wrote down. `forge ui explore` looks for what nobody wrote down: it walks an app's screens on the iPhone, tries each safe control once, checks every screen it reaches, and writes each problem as a `forge ui run` file that replays it. It is [UI Testing M5](forge-ui-testing.md#milestones) and the crawler in [general-device-control.md](research/general-device-control.md#the-crawler-on-the-unified-ui-model), and it is how an agent finds problems in an app it just changed without being told where to look.
 
 **Status (2026-11-08):** built and tested on Linux. First run on Cati the same day: it walked Pocket Library (27 screens in 79 s) and found real accessibility issues, but **it changed Reuben's real library** (rated a book, changed its status, opened it in the reader, saved "Explored Book" entries). Exploring now needs the app's test-data mode or `--real-data`, which only looks ([Test data](#test-data)); that version has not run on the phone yet. See [Phone checks](#phone-checks).

@@ -34,8 +34,8 @@ use std::path::Path;
 
 use serde::Deserialize;
 
-use crate::fake::SPRINGBOARD;
-use crate::{Driver, ElementRef, Locator, Result, UiError, UiNode};
+use forge_uitest::fake::SPRINGBOARD;
+use forge_uitest::{Driver, ElementRef, Locator, Result, UiError, UiNode};
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]

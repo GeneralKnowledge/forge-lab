@@ -1,0 +1,17 @@
+[package]
+name = "forge-explore"
+version = "0.1.0"
+description = "Forge Lab's exploratory tester: seeded walks over an app's screens, through ixOS's forge-uitest"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[dependencies]
+forge-uitest = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+toml = "1.1"
+
+[dev-dependencies]
+tempfile = "3.14"

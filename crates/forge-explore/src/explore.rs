@@ -27,8 +27,8 @@ use std::time::{Duration, Instant};
 use serde::Serialize;
 
 use crate::focus::{Focus, Route, Strength};
-use crate::policy::{self, Gate};
-use crate::{wait_for, Driver, Locator, Result, UiError, UiNode};
+use forge_uitest::policy::{self, Gate};
+use forge_uitest::{wait_for, Driver, Locator, Result, UiError, UiNode};
 
 /// What an exploration may do and how long it may take.
 #[derive(Debug, Clone)]
@@ -1839,7 +1839,7 @@ impl Explorer<'_> {
     fn on_element(
         &mut self,
         locator: &Locator,
-        act: &mut dyn FnMut(&mut dyn Driver, &crate::ElementRef) -> Result<()>,
+        act: &mut dyn FnMut(&mut dyn Driver, &forge_uitest::ElementRef) -> Result<()>,
     ) -> Result<()> {
         let element = wait_for(self.driver, locator, self.config.find_timeout)?;
         match act(self.driver, &element) {
@@ -1865,7 +1865,7 @@ impl Explorer<'_> {
         let front = self.driver.foreground()?;
         match front.as_deref() {
             Some(app) if app == self.config.app => {}
-            Some(other) if other != crate::fake::SPRINGBOARD => {
+            Some(other) if other != forge_uitest::fake::SPRINGBOARD => {
                 return Ok(Landed::Other(other.to_owned()))
             }
             _ => return Ok(Landed::Closed),
@@ -2446,8 +2446,8 @@ fn repro_file(config: &Config, issue: &Issue, actions: &[Action]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::tree::Rect;
-    use crate::ElementRef;
+    use forge_uitest::tree::Rect;
+    use forge_uitest::ElementRef;
 
     const APP: &str = "org.forgemobile.pocketlibrary";
 
@@ -2657,7 +2657,7 @@ mod tests {
             Ok(())
         }
         fn terminate(&mut self, _: &str) -> Result<()> {
-            self.front = Some(crate::fake::SPRINGBOARD.into());
+            self.front = Some(forge_uitest::fake::SPRINGBOARD.into());
             Ok(())
         }
         fn background(&mut self, _: f64) -> Result<()> {
@@ -2721,7 +2721,7 @@ mod tests {
                     self.current = next;
                     self.keyboard_up = false;
                 }
-                Some(To::Crash) => self.front = Some(crate::fake::SPRINGBOARD.into()),
+                Some(To::Crash) => self.front = Some(forge_uitest::fake::SPRINGBOARD.into()),
                 Some(To::OtherApp(app)) => self.front = Some(app.into()),
                 None => {}
             }
@@ -3221,7 +3221,7 @@ mod tests {
             step.contains("not recorded") && !step.contains(SECRET),
             "{step}"
         );
-        assert!(crate::script::Script::parse(&format!(
+        assert!(forge_uitest::script::Script::parse(&format!(
             "name = \"r\"\napp = \"{APP}\"\n[[step]]\n{step}\n"
         ))
         .is_ok());
@@ -3412,7 +3412,7 @@ mod tests {
         assert_eq!(json["stopped"], "explored");
         let crash = issue(&report, "app_closed");
         let file = dir.path().join(crash.repro_file.as_ref().unwrap());
-        let script = crate::script::Script::load(&file).unwrap();
+        let script = forge_uitest::script::Script::load(&file).unwrap();
         assert_eq!(script.app, APP);
         let steps: Vec<String> = script.steps.iter().map(|s| s.describe()).collect();
         assert!(steps[0].starts_with("launch"), "{steps:?}");

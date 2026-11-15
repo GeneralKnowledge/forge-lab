@@ -1,5 +1,7 @@
 # The Linux dev loop for native iOS apps: an assessment
 
+> Moved from ixOS to forge-lab on 2026-11-15, as written then. `forge mcp` and `forge device pair|connect` are now `forge-lab mcp` and `forge-lab device ...`.
+
 Status: assessment written 2026-11-07; "Where the loop stands" and "Proving it on the phone" are kept current ("Where the loop stands" last checked 2026-11-08, after M6.1 to M6.4 of [forge-m6.md](forge-m6.md); "Proving it on the phone" 2026-11-07, main at 5cb6e10). For the current state of every capability, check [status.md](status.md), which is generated from the ledger. The rest of the page is the original assessment and its measurements: it describes the state when it was written, and notes marked *Since then* say what has changed.
 
 ## Where the loop stands

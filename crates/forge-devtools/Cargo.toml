@@ -8,7 +8,7 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
-forge-devproto = { path = "../forge-devproto" }
+forge-devproto = { workspace = true }
 forge-runtime = { workspace = true }
 
 [dev-dependencies]

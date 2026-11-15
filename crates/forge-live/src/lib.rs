@@ -1,22 +1,33 @@
 //! The live connection to a development build of an app (Forge Device M1).
 //!
-//! The app (built with `forge run ios --devtools`) listens on the phone's
-//! loopback interface; [`DeviceBackend::connect_port`] reaches it through
+//! The app (built with `forge run ios --devtools`, its crate depending on
+//! `forge-devtools` under its `devtools` feature) listens on the phone's
+//! loopback interface; ixOS's `DeviceBackend::connect_port` reaches it through
 //! usbmuxd. The protocol is `forge_devproto`; this module adds what only
 //! the computer needs: where pairing secrets are kept, and the connect
 //! steps with errors in words.
 
-use std::io::{self, Read, Write};
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 use forge_devproto::client::{self, format_secret, parse_secret, Client, From};
 use forge_devproto::{new_secret, Secret};
 
-use crate::{DeviceBackend, DeviceError, DeviceRef, Result};
+pub use forge_device::LiveStream;
+use forge_device::{DeviceBackend, DeviceError, DeviceRef};
 
-/// A connection to a port on the phone.
-pub trait LiveStream: Read + Write + Send {}
-impl<T: Read + Write + Send> LiveStream for T {}
+/// What can go wrong on the live connection.
+#[derive(Debug, thiserror::Error)]
+pub enum LiveError {
+    #[error(transparent)]
+    Device(#[from] DeviceError),
+    #[error(transparent)]
+    Live(#[from] client::ClientError),
+    #[error("{0}")]
+    Pairings(String),
+}
+
+pub type Result<T> = std::result::Result<T, LiveError>;
 
 /// An open session with a development build.
 pub type Session = Client<Box<dyn LiveStream>>;
@@ -40,7 +51,7 @@ impl PairingStore {
             .map(PathBuf::from)
             .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".local/share")))
             .ok_or_else(|| {
-                DeviceError::Pairings("set HOME or XDG_DATA_HOME to keep pairings".into())
+                LiveError::Pairings("set HOME or XDG_DATA_HOME to keep pairings".into())
             })?;
         Ok(Self::at(base.join("forge/devices")))
     }
@@ -121,7 +132,7 @@ pub fn pair(
     let preamble = client::pair(stream, &secret)?;
     let path = store
         .save(&device.udid, &preamble.app, &secret)
-        .map_err(|e| DeviceError::Pairings(format!("could not save the pairing: {e}")))?;
+        .map_err(|e| LiveError::Pairings(format!("could not save the pairing: {e}")))?;
     Ok((preamble.app, path))
 }
 
