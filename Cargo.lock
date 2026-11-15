@@ -565,7 +565,7 @@ dependencies = [
 [[package]]
 name = "forge-device"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?branch=claude%2Fproject-thread-jt3hrz#cfce213cb1fbdadb77d65727b7b8c307e9a77e95"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
 dependencies = [
  "idevice",
  "plist",
@@ -576,7 +576,7 @@ dependencies = [
 [[package]]
 name = "forge-devproto"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?branch=claude%2Fproject-thread-jt3hrz#cfce213cb1fbdadb77d65727b7b8c307e9a77e95"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
 dependencies = [
  "ciborium",
  "serde",
@@ -646,7 +646,7 @@ dependencies = [
 [[package]]
 name = "forge-net"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?branch=claude%2Fproject-thread-jt3hrz#cfce213cb1fbdadb77d65727b7b8c307e9a77e95"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
 dependencies = [
  "jni",
  "rustls",
@@ -658,7 +658,7 @@ dependencies = [
 [[package]]
 name = "forge-runtime"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?branch=claude%2Fproject-thread-jt3hrz#cfce213cb1fbdadb77d65727b7b8c307e9a77e95"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
 dependencies = [
  "forge-net",
  "jni",
@@ -668,7 +668,7 @@ dependencies = [
 [[package]]
 name = "forge-uitest"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?branch=claude%2Fproject-thread-jt3hrz#cfce213cb1fbdadb77d65727b7b8c307e9a77e95"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
 dependencies = [
  "base64 0.22.1",
  "forge-device",

@@ -16,10 +16,10 @@ rust-version = "1.89"
 # ixOS, by git. Moves with ixOS: bump the rev after an ixOS change these
 # crates need.
 [workspace.dependencies]
-forge-runtime = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
-forge-device = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
-forge-devproto = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
-forge-uitest = { git = "https://github.com/GeneralKnowledge/ixOS", branch = "claude/project-thread-jt3hrz" }
+forge-runtime = { git = "https://github.com/GeneralKnowledge/ixOS", rev = "129108381c70dff3429f772f3344e27d145858ae" }
+forge-device = { git = "https://github.com/GeneralKnowledge/ixOS", rev = "129108381c70dff3429f772f3344e27d145858ae" }
+forge-devproto = { git = "https://github.com/GeneralKnowledge/ixOS", rev = "129108381c70dff3429f772f3344e27d145858ae" }
+forge-uitest = { git = "https://github.com/GeneralKnowledge/ixOS", rev = "129108381c70dff3429f772f3344e27d145858ae" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0"
