@@ -1,6 +1,6 @@
 # Forge MCP: an iOS development environment an AI agent can operate
 
-> Moved from ixOS to forge-lab on 2026-11-15. The server is now `forge-lab mcp` (set `FORGE_WORKSPACE` to the ixOS checkout); where this page says `forge mcp`, read `forge-lab mcp`. The result contract is in ixOS `docs/json-output.md`.
+> Moved from ixOS to forge-lab on 2026-11-15. The server is now `forge-lab mcp` (set `FORGE_WORKSPACE` to the ixOS checkout); where this page says `forge mcp`, read `forge-lab mcp`. The result contract is in ixOS `docs/json-output.md`. Since 2026-11-20 the default sandbox bundle id is `org.forgemobile.studio`, not `org.forgemobile.agentlab` (the VPN app uses that one; ixOS `docs/research/app-studio.md`), and `forge_verify` refuses `run: true` while run records are parked.
 
 Status: **M0 server built** (`forge mcp`, crate `crates/forge-mcp`) and **run by an agent on Cati** (2026-11-07, [first run](#first-tipster-run-on-cati-2026-11-07)): a headless Claude Code agent built, installed, inspected, fixed and UI-tested Tipster with no person touching the phone, and Reuben confirmed on 2026-11-08 that the app works. **M0 is done.** [Using Forge MCP](#using-forge-mcp) says what exists and how it differs from the design below; the rest of the page is the design it follows.
 

@@ -90,7 +90,7 @@ impl Journal {
                 }
                 Err(e) => {
                     eprintln!(
-                        "forge mcp: run journal off ({}: {e})",
+                        "forge-lab mcp: run journal off ({}: {e})",
                         self.path().display()
                     );
                     st.failed = true;

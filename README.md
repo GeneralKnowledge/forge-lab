@@ -23,7 +23,7 @@ The ixOS crates it uses (`forge-uitest`, `forge-device`, `forge-devproto`, `forg
 cargo install --path crates/forge-lab --locked
 ```
 
-**MCP server.** Put this in an app's `.mcp.json` (or see `templates/agent/mcp.json`):
+**MCP server.** Put this in an app's `.mcp.json` (ixOS's `forge init --agent` no longer writes one):
 
 ```json
 { "mcpServers": { "forge": { "command": "forge-lab", "args": ["mcp"], "env": { "FORGE_WORKSPACE": "/path/to/ixOS" } } } }

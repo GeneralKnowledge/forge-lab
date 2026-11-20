@@ -565,7 +565,7 @@ dependencies = [
 [[package]]
 name = "forge-device"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=ae7d2f576d925597aeafa943fccd5a99c5d61d70#ae7d2f576d925597aeafa943fccd5a99c5d61d70"
 dependencies = [
  "idevice",
  "plist",
@@ -576,7 +576,7 @@ dependencies = [
 [[package]]
 name = "forge-devproto"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=ae7d2f576d925597aeafa943fccd5a99c5d61d70#ae7d2f576d925597aeafa943fccd5a99c5d61d70"
 dependencies = [
  "ciborium",
  "serde",
@@ -646,7 +646,7 @@ dependencies = [
 [[package]]
 name = "forge-net"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=ae7d2f576d925597aeafa943fccd5a99c5d61d70#ae7d2f576d925597aeafa943fccd5a99c5d61d70"
 dependencies = [
  "jni",
  "rustls",
@@ -658,7 +658,7 @@ dependencies = [
 [[package]]
 name = "forge-runtime"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=ae7d2f576d925597aeafa943fccd5a99c5d61d70#ae7d2f576d925597aeafa943fccd5a99c5d61d70"
 dependencies = [
  "forge-net",
  "jni",
@@ -668,7 +668,7 @@ dependencies = [
 [[package]]
 name = "forge-uitest"
 version = "0.1.0"
-source = "git+https://github.com/GeneralKnowledge/ixOS?rev=129108381c70dff3429f772f3344e27d145858ae#129108381c70dff3429f772f3344e27d145858ae"
+source = "git+https://github.com/GeneralKnowledge/ixOS?rev=ae7d2f576d925597aeafa943fccd5a99c5d61d70#ae7d2f576d925597aeafa943fccd5a99c5d61d70"
 dependencies = [
  "base64 0.22.1",
  "forge-device",

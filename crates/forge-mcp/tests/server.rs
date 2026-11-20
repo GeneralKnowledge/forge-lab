@@ -359,9 +359,12 @@ async fn device_status_is_team_aware_and_hung_reads_are_stopped() {
         .as_str()
         .unwrap()
         .contains("3 sideloaded apps"));
+    // `forge device list` has no --udid; the server's phone filter applies
+    // to `device apps` and the other device commands.
+    assert!(calls(&fx).iter().any(|l| l == "--json device list"));
     assert!(calls(&fx)
         .iter()
-        .any(|l| l == "--json device list --udid 0000"));
+        .any(|l| l == "--json device apps --udid 0000"));
     assert_eq!(data["free_team_slots"]["free"], 0);
     let notes = data["notes"].to_string();
     assert!(
@@ -652,7 +655,7 @@ async fn audit_and_dark_mode_go_through_forge_ui() {
 }
 
 #[tokio::test]
-async fn a_run_record_starts_at_the_server_start_and_no_tool_can_accept() {
+async fn run_records_are_refused_and_no_tool_can_accept() {
     let _g = SERIAL.lock().await;
     let fx = fixture();
     let mut c = Client::start(&fx, true, true).await;
@@ -661,27 +664,24 @@ async fn a_run_record_starts_at_the_server_start_and_no_tool_can_accept() {
     assert!(text.contains("\"twin_only\""), "{text}");
     assert!(!text.contains("\"accept\""), "no tool takes accept");
     c.call("forge_verify", json!({"project": "Tipster"})).await;
-    c.call("forge_verify", json!({"project": "Tipster", "run": true}))
+    let run = c
+        .call("forge_verify", json!({"project": "Tipster", "run": true}))
         .await;
+    assert_eq!(run["isError"], true, "{run}");
+    assert!(run.to_string().contains("parked"), "{run}");
     let lines = calls(&fx);
     let verify: Vec<&String> = lines
         .iter()
         .filter(|l| l.starts_with("--json verify "))
         .collect();
-    assert_eq!(verify.len(), 2, "{lines:?}");
-    assert!(verify.iter().all(|l| !l.contains("--accept")), "{lines:?}");
-    // The run starts when the server did, and reads this server's journal
-    // (written by the first call).
-    let run = verify[1];
-    let start = run
-        .split("--run ")
-        .nth(1)
-        .unwrap()
-        .split(' ')
-        .next()
-        .unwrap();
-    assert_eq!(start.len(), 19, "{run}");
-    assert!(run.contains(&format!("{start}-mcp/journal.jsonl")), "{run}");
+    // Only the first call reached forge; `run` never passes --run or --journal.
+    assert_eq!(verify.len(), 1, "{lines:?}");
+    assert!(
+        lines
+            .iter()
+            .all(|l| !l.contains("--accept") && !l.contains("--run ") && !l.contains("--journal")),
+        "{lines:?}"
+    );
     // Every forge the server runs knows it is under MCP, so --accept refuses.
     assert!(
         lines.iter().any(|l| l == "env FORGE_MCP_CHILD=1"),
