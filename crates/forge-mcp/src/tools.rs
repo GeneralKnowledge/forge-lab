@@ -75,13 +75,13 @@ pub const SPECS: &[Spec] = &[
     Spec {
         name: "forge_create_app",
         title: "Create an app",
-        description: "A new native iOS app from Forge's starter: a Rust crate with UniFFI bindings, a SwiftUI shell, forge.toml, AGENTS.md. Installs as the agent sandbox bundle id org.forgemobile.agentlab unless bundle_id is given.",
+        description: "A new native iOS app from Forge's starter: a Rust crate with UniFFI bindings, a SwiftUI shell, forge.toml, AGENTS.md. Installs as the studio sandbox bundle id org.forgemobile.studio unless bundle_id is given.",
         tier: Tier::Project,
         device: false,
         needs_ui: false,
         schema: || no_project(json!({
             "name": {"type": "string", "description": "App name: letters and digits, starting with a capital, e.g. Tipster"},
-            "bundle_id": {"type": "string", "description": "Default org.forgemobile.agentlab (the agent sandbox id, so experiments don't use new App IDs or slots)"},
+            "bundle_id": {"type": "string", "description": "Default org.forgemobile.studio (the shared sandbox id for agent-made apps, so experiments don't use new App IDs; not org.forgemobile.agentlab, which the VPN app now uses)"},
             "path": {"type": "string", "description": "Folder to create, relative to the root (default: <name>)"}
         }), &["name"]),
     },
@@ -117,13 +117,13 @@ pub const SPECS: &[Spec] = &[
     Spec {
         name: "forge_verify",
         title: "Is every requirement proven?",
-        description: "Reads the app's requirements.toml and the evidence bundles that forge_check (swift) and forge_run_ui_test wrote, and says per requirement whether its Linux twin tests and its iPhone scenario passed for the code as it is now (stale = recorded for different files). Runs nothing. Use it as the stop condition: done when ok, or, without a phone, when ok with twin_only. With run: true it instead writes the run record for this session (since the server started): commits, builds and installs, checks, crashes, failures and the commits that repaired them, and every check not run with its reason, as <app>/.forge/runs/<id>-run/evidence.json and report.md; give the person report.md. Only a person can accept a requirement (forge verify --accept in their own terminal); no tool does it.",
+        description: "Reads the app's requirements.toml and the evidence bundles that forge_check (swift) and forge_run_ui_test wrote, and says per requirement whether its Linux twin tests and its iPhone scenario passed for the code as it is now (stale = recorded for different files). Runs nothing. Use it as the stop condition: done when ok, or, without a phone, when ok with twin_only. (Run records, `run: true`, are parked in forge-lab and refused until they come back.) Only a person can accept a requirement (forge verify --accept in their own terminal); no tool does it.",
         tier: Tier::Observe,
         device: false,
         needs_ui: false,
         schema: || schema(json!({
             "twin_only": {"type": "boolean", "description": "Only require the Linux twin evidence; iPhone results are still shown"},
-            "run": {"type": "boolean", "description": "Write the run record for this session instead (forge verify --run <server start>, or FORGE_RUN_START when the run script set it, so a staged run covers every stage)"}
+            "run": {"type": "boolean", "description": "Parked: run records moved out of `forge verify` and are not back in forge-lab yet, so true is refused"}
         }), &[]),
     },
     Spec {
@@ -564,17 +564,16 @@ impl crate::Server {
                 let mut inv =
                     Invocation::new(&["verify", "--project", &dir], &app.dir, secs(MIN), "test");
                 if args.0.get("run") == Some(&json!(true)) {
-                    if let Some(start) = self.run_start() {
-                        // Every stage's journal since the run began.
-                        inv = inv.arg("--run").arg(start);
-                    } else {
-                        inv = inv.arg("--run").arg(self.started());
-                        let journal = self.journal_path();
-                        if journal.is_file() {
-                            inv = inv.arg("--journal").arg(journal.display().to_string());
-                        }
-                    }
-                } else if args.0.get("twin_only") == Some(&json!(true)) {
+                    // `forge verify --run` and `--journal` left ixOS with the
+                    // run records (2026-11-15); the code waits in parked/.
+                    return Answer::of(refusal(
+                        name,
+                        "usage",
+                        "run records are parked in forge-lab (parked/forge-cli/run_record.rs) and `forge verify` no longer writes them; call forge_verify without run, and report the evidence bundles under <app>/.forge/runs/ instead",
+                        None,
+                    ));
+                }
+                if args.0.get("twin_only") == Some(&json!(true)) {
                     inv = inv.arg("--twin-only");
                 }
                 Answer::of(self.forge(inv, cancel).await)
@@ -1003,7 +1002,7 @@ impl crate::Server {
     fn install_allowed(&self, app: &App) -> Result<(), String> {
         if !self.opts.allow_install {
             return Err(format!(
-                "Installing on the iPhone is not allowed in this session: on a free Apple team a new app takes one of 3 slots and a new App ID. Ask the person to install it themselves, or to restart the server with `forge mcp --allow install{}`",
+                "Installing on the iPhone is not allowed in this session: on a free Apple team a new app takes one of 3 slots and a new App ID. Ask the person to install it themselves, or to restart the server with `forge-lab mcp --allow install{}`",
                 if app.bundle_id == crate::SANDBOX_BUNDLE_ID {
                     format!(" --bundle-id {}", crate::SANDBOX_BUNDLE_ID)
                 } else {
@@ -1013,7 +1012,7 @@ impl crate::Server {
         }
         if !self.opts.bundle_ids.is_empty() && !self.opts.bundle_ids.contains(&app.bundle_id) {
             return Err(format!(
-                "{} may not be installed in this session: only {} (forge mcp --bundle-id). Change bundle_id in forge.toml to an allowed one, or ask the person",
+                "{} may not be installed in this session: only {} (forge-lab mcp --bundle-id). Change bundle_id in forge.toml to an allowed one, or ask the person",
                 app.bundle_id,
                 self.opts.bundle_ids.join(", ")
             ));
@@ -1025,12 +1024,8 @@ impl crate::Server {
         let root = self.opts.root.clone();
         let list = self
             .forge(
-                self.with_udid(Invocation::new(
-                    &["device", "list"],
-                    &root,
-                    secs(MIN),
-                    "device",
-                )),
+                // `forge device list` lists every phone and has no --udid.
+                Invocation::new(&["device", "list"], &root, secs(MIN), "device"),
                 cancel,
             )
             .await;

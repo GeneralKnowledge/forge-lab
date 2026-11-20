@@ -41,7 +41,10 @@ pub use tools::Tier;
 /// The bundle id every agent-made app installs as until a person promotes it
 /// (decided 2026-11-07, docs/forge-mcp.md): one slot and one App ID for all
 /// agent experiments on a free team.
-pub const SANDBOX_BUNDLE_ID: &str = "org.forgemobile.agentlab";
+/// The shared bundle id agent-made apps install as (App Studio, ixOS
+/// docs/research/app-studio.md). Not `org.forgemobile.agentlab`: the VPN app
+/// uses that id, and an agent app installed over it would inherit its data.
+pub const SANDBOX_BUNDLE_ID: &str = "org.forgemobile.studio";
 
 /// Largest screenshot returned inline; bigger ones are only saved.
 const MAX_IMAGE_BYTES: u64 = 6 * 1024 * 1024;
@@ -175,7 +178,7 @@ impl Server {
                 result: tools::refusal(
                     name,
                     "usage",
-                    "this forge build has no `forge ui` (Forge UI Testing, PR #61): update Forge and restart `forge mcp`",
+                    "this forge build has no `forge ui` (Forge UI Testing, PR #61): update Forge and restart `forge-lab mcp`",
                     None,
                 ),
                 untrusted: false,
@@ -509,7 +512,10 @@ pub fn serve_stdio(opts: Options) -> Result<(), String> {
         .map_err(|e| e.to_string())?;
     runtime.block_on(async {
         let server = Server::new(opts);
-        eprintln!("forge mcp: run journal {}", server.journal_path().display());
+        eprintln!(
+            "forge-lab mcp: run journal {}",
+            server.journal_path().display()
+        );
         let running = server
             .serve(rmcp::transport::stdio())
             .await

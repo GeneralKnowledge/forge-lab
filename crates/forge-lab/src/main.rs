@@ -43,7 +43,7 @@ enum Commands {
         #[arg(long, value_name = "WHAT", value_parser = ["install"])]
         allow: Vec<String>,
         /// Only these bundle ids may be installed (repeatable), e.g.
-        /// org.forgemobile.agentlab, the agent sandbox id
+        /// org.forgemobile.studio, the agent sandbox id
         #[arg(long = "bundle-id", value_name = "ID")]
         bundle_ids: Vec<String>,
         /// The only phone device tools may touch

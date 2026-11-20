@@ -211,7 +211,7 @@ pub async fn run(
                 format!(
                     "this forge build has no `{}` command. {}",
                     inv.args.first().map(String::as_str).unwrap_or(""),
-                    "Update Forge (or merge the PR that adds it) and restart `forge mcp`."
+                    "Update Forge (or merge the PR that adds it) and restart `forge-lab mcp`."
                 )
             } else {
                 format!(
